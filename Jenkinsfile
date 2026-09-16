@@ -12,6 +12,13 @@ pipeline {
             }
         }
 
+        stage('Check Java') {
+            steps {
+                sh 'java -version'
+                sh 'which java'
+            }
+        }
+
         stage('Build Order Service') {
             steps {
                 dir('order-service') {
