@@ -48,6 +48,34 @@ pipeline {
                 sh 'docker compose build'
             }
         }
+        
+        stage('Push Docker Images') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker tag order-management-system-order-service:latest $DOCKER_USER/order-service:latest
+                        docker tag order-management-system-payment-service:latest $DOCKER_USER/payment-service:latest
+                        docker tag order-management-system-notification-service:latest $DOCKER_USER/notification-service:latest
+                        docker push $DOCKER_USER/order-service:latest
+                        docker push $DOCKER_USER/payment-service:latest
+                        docker push $DOCKER_USER/notification-service:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(credentials: ['ec2-ssh-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@13.218.111.189 "cd order-service && docker compose pull && docker compose up -d"
+                        ssh -o StrictHostKeyChecking=no ubuntu@100.56.102.52 "cd payment-service && docker compose pull && docker compose up -d"
+                        ssh -o StrictHostKeyChecking=no ubuntu@32.196.161.211 "cd notification-service && docker compose pull && docker compose up -d"
+                    '''
+                }
+            }
+        }
     }
 
     post {
