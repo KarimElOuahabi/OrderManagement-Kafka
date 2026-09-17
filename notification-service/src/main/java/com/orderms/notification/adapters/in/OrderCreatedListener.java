@@ -12,6 +12,6 @@ public class OrderCreatedListener {
     @KafkaListener(topics = "order.created", groupId = "notification-service")
     public void handle(String rawMessage) throws Exception {
         OrderCreatedEvent event = objectMapper.readValue(rawMessage, OrderCreatedEvent.class);
-        System.out.println("Notification: Order " + event.orderId() + " received, price: " + event.price());
+        System.out.println("Notification: Order " + event.orderId() + " received, price: " + event.price() + "[test for jenkins CI/CD pipeline triggering]");
     }
 }
