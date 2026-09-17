@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        gradle 'Gradle'  // must match the name configured in Manage Jenkins > Tools
+        gradle 'Gradle' 
     }
 
     stages {
