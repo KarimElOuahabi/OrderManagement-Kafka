@@ -48,7 +48,7 @@ pipeline {
                 sh 'docker compose build'
             }
         }
-        
+
         stage('Push Docker Images') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
@@ -67,11 +67,12 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                sshagent(credentials: ['ec2-ssh-key']) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@13.218.111.189 "cd order-service && docker compose pull && docker compose up -d"
-                        ssh -o StrictHostKeyChecking=no ubuntu@100.56.102.52 "cd payment-service && docker compose pull && docker compose up -d"
-                        ssh -o StrictHostKeyChecking=no ubuntu@32.196.161.211 "cd notification-service && docker compose pull && docker compose up -d"
+                        chmod 600 $SSH_KEY
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@13.218.111.189 "cd order-service && docker compose pull && docker compose up -d"
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@100.56.102.52 "cd payment-service && docker compose pull && docker compose up -d"
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@32.196.161.211 "cd notification-service && docker compose pull && docker compose up -d"
                     '''
                 }
             }
