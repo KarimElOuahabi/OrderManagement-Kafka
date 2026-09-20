@@ -57,12 +57,12 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker tag order-management-system-order-service:latest $DOCKER_USER/order-service:latest
-                        docker tag order-management-system-payment-service:latest $DOCKER_USER/payment-service:latest
-                        docker tag order-management-system-notification-service:latest $DOCKER_USER/notification-service:latest
-                        docker push $DOCKER_USER/order-service:latest
-                        docker push $DOCKER_USER/payment-service:latest
-                        docker push $DOCKER_USER/notification-service:latest
+                        docker tag order-management-system-order-service:latest $DOCKER_USER/order-service:$GIT_COMMIT
+                        docker tag order-management-system-payment-service:latest $DOCKER_USER/payment-service:$GIT_COMMIT
+                        docker tag order-management-system-notification-service:latest $DOCKER_USER/notification-service:$GIT_COMMIT
+                        docker push $DOCKER_USER/order-service:$GIT_COMMIT
+                        docker push $DOCKER_USER/payment-service:$GIT_COMMIT
+                        docker push $DOCKER_USER/notification-service:$GIT_COMMIT
                     '''
                 }
             }
@@ -73,9 +73,9 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
                         chmod 600 $SSH_KEY
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@13.218.111.189 "cd order-service && docker compose pull && docker compose up -d"
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@100.56.102.52 "cd payment-service && docker compose pull && docker compose up -d"
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@32.196.161.211 "cd notification-service && docker compose pull && docker compose up -d"
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@3.231.206.191 "cd order-service && export IMAGE_TAG=$GIT_COMMIT && docker compose pull && docker compose up -d"
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@35.173.1.140 "cd payment-service && export IMAGE_TAG=$GIT_COMMIT && docker compose pull && docker compose up -d"
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@3.235.249.97 "cd notification-service && export IMAGE_TAG=$GIT_COMMIT && docker compose pull && docker compose up -d"
                     '''
                 }
             }
