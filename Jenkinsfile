@@ -46,6 +46,7 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 sh '''
+                    export COMPOSE_PROJECT_NAME=order-management-system
                     export CACHEBUST=$(git rev-parse HEAD)
                     docker compose build
                 '''
