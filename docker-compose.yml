@@ -91,7 +91,10 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-  
+      order-db:
+        condition: service_healthy
+      payment-db:
+        condition: service_healthy
 volumes:
   order-db-data:
   payment-db-data:
