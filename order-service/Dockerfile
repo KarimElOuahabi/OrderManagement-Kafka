@@ -2,8 +2,7 @@ FROM eclipse-temurin:21-jdk AS builder
 WORKDIR /app
 COPY build.gradle settings.gradle gradlew ./
 COPY gradle ./gradle
-RUN ./gradlew dependencies --no-daemon
-ARG CACHEBUST=1
+RUN ./gradlew dependencies --no-daemon -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=60000
 COPY . .
 RUN ./gradlew bootJar --no-daemon
 

@@ -45,10 +45,7 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
-                sh '''
-                    export CACHEBUST=$(git rev-parse HEAD)
-                    docker compose build
-                '''
+                sh 'docker compose build'
             }
         }
 
