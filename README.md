@@ -109,7 +109,7 @@ The `Jenkinsfile` runs these stages:
 
 ## Known limitations and next steps
 
-- **Dual write:** an order is saved and its event published as two separate steps. The transactional outbox pattern, as used in [OrderFlow](https://github.com/KarimElOuahabi/orderflow), would make this atomic.
+- **Dual write:** an order is saved and its event published as two separate steps. The transactional outbox pattern, as used in [OrderFlow-AWS-Terraform](https://github.com/KarimElOuahabi/OrderFlow-AWS-Terraform), would make this atomic.
 - **Credentials:** the database passwords are defaults for local development. They should move to environment variables or a secrets manager before any real deployment.
 - **Schema management:** Hibernate `ddl-auto: update` creates the tables. Flyway migrations would be safer.
 - **Resilience:** no dead-letter topics, retries with backoff or idempotent consumers yet.
@@ -119,4 +119,4 @@ The `Jenkinsfile` runs these stages:
 
 ## Related project
 
-[OrderFlow](https://github.com/KarimElOuahabi/orderflow) solves a similar problem with AWS managed services (EventBridge, SQS, Lambda, ECS Fargate) and Terraform. This project focuses on Kafka and Docker.
+[OrderFlow-AWS-Terraform](https://github.com/KarimElOuahabi/OrderFlow-AWS-Terraform) solves a similar problem with AWS managed services (EventBridge, SQS, Lambda, ECS Fargate) and Terraform. This project focuses on Kafka and Docker.
