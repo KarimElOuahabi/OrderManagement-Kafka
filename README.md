@@ -1,4 +1,4 @@
-# Order Management System
+# OrderManagement-Kafka
 
 An event-driven order management system built to practice microservices with Apache Kafka. Three Spring Boot services (`order-service`, `payment-service`, `notification-service`) never call each other directly. They communicate only through Kafka topics: placing an order triggers a payment, and the payment result updates the order and triggers a notification. Each service owns its own PostgreSQL database, and the whole stack runs with one `docker compose up`.
 
@@ -41,7 +41,7 @@ Suggested content:
 ## Repository structure
 
 ```
-order-mgmt-system/
+OrderManagement-Kafka/
 ├── Jenkinsfile                  # CI/CD pipeline
 ├── docker-compose.yml           # Kafka, two Postgres databases and the three services
 ├── order-service/               # REST API, order domain, Kafka producer and consumer
